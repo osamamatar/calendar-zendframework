@@ -1,0 +1,23 @@
+<?php
+echo $this->headTitle('Add new group');
+?>
+
+    <div class="row">
+        <div class="col-md-8"> <h1> Add new group </h1>
+        </div>
+        <div class="col-md-4">  </div>
+    </div>
+
+<?php
+
+$form = $this->form;
+$form->setAttribute('action', $this->url('school',array('action'=>'addgroup')));
+$form->prepare();
+
+echo $this->form()->openTag($form);
+echo $this->formRow($form->get('group_name')) . "</br>";
+echo $this->formRow($form->get('addgroup')) . "</br>";
+
+echo $this->form()->closeTag();
+
+?>

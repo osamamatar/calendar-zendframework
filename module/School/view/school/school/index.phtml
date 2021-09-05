@@ -1,0 +1,47 @@
+<?php
+echo $this->headTitle('calendar home page ');
+?>
+
+<div class="row" style="padding: 100px">
+    <div class="col-md-4">
+
+    </div>
+    <div class="col-md-4">
+        <a class="btn btn-primary" href="<?php echo $this->url('school', array('action'=>'addgroup'));?>">Add new group</a>
+        <a class="btn btn-default" href="<?php echo $this->url('school', array('action'=>'adduser'));?>">Add new user</a>
+    </div>
+    <div class="col-md-4">
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <table class="table table-bordered ta" id="myTable">
+            <tr>
+                <td> Group name </td>
+
+                <td></td>
+
+            </tr>
+
+            <?php if(!empty($groups)) :?>
+
+            <?php foreach($groups as $group) :?>
+            <tr id="<?php echo "row_".$group->id; ?>">
+                <td>  <?php echo $this->escapeHtml($group->group_name);?> </td>
+
+                <td>   <a href="<?php echo $this->url('school' ,array('action' => 'calendar' ,
+                        'id'     => $group->id
+                    ));
+                    ?>">  view calendar </a>
+
+                </td>
+
+            <tr>
+                <?php endforeach;?>
+                <?php endif ;?>
+        </table>
+    </div>
+    <div class="col-md-4"></div>
+</div>

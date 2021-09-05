@@ -1,0 +1,115 @@
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/main.min.js"></script>
+<h2 align="center"><a href="#">Calendar For[<?php echo $this->group->group_name?>]</a></h2>
+<br />
+
+<script>
+
+        $(document).ready(function() {
+            let data= JSON.parse('<?php echo $this->data?>')
+
+        var calendar = $('#calendar').fullCalendar({
+        editable:true,
+            timeZone: 'UTC',
+        header:{
+        left:'prev,next today',
+        center:'title',
+        right:'month,agendaWeek,agendaDay,listMonth'
+        },
+            weekNumbers: true,
+        events:data,
+        select: function(start, end, allDay)
+            {
+                var title = prompt("Enter Event Title");
+                if(title)
+                {
+                    var start = $.fullCalendar.formatDate(start, "Y-MM-DD HH:mm:ss");
+                    var end = $.fullCalendar.formatDate(end, "Y-MM-DD HH:mm:ss");
+
+                    $.ajax({
+                        url:"<?php echo $this->url('school' ,array('action' => 'addEvent'));?>",
+                        type:"POST",
+                        data:{title:title, start:start, end:end,group_id:<?php echo $this->group->id?>},
+                        success:function()
+                        {
+                            calendar.fullCalendar('refetchEvents');
+                            alert("Added Successfully");
+                        },
+                        failure: function()
+                        {
+                            alert(" could not connect to the calendar action");
+                        }
+                    })
+                }
+            },
+        selectable:true,
+        selectHelper:true,
+        editable:true,
+        });
+        });
+
+</script>
+<div class="container">
+    <div id="calendar"></div>
+</div>
+
+<div class="modal fade" id="ModalAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form class="form-horizontal" method="POST" action="addEvent.php">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Add Event</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="title" class="col-sm-2 control-label">Title</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="title" class="form-control" id="title" placeholder="Title">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="color" class="col-sm-2 control-label">Color</label>
+                        <div class="col-sm-10">
+                            <select name="color" class="form-control" id="color">
+                                <option value="">Choose</option>
+                                <option style="color:#0071c5;" value="#0071c5">&#9724; Dark blue</option>
+                                <option style="color:#40E0D0;" value="#40E0D0">&#9724; Turquoise</option>
+                                <option style="color:#008000;" value="#008000">&#9724; Green</option>
+                                <option style="color:#FFD700;" value="#FFD700">&#9724; Yellow</option>
+                                <option style="color:#FF8C00;" value="#FF8C00">&#9724; Orange</option>
+                                <option style="color:#FF0000;" value="#FF0000">&#9724; Red</option>
+                                <option style="color:#000;" value="#000">&#9724; Black</option>
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="start" class="col-sm-2 control-label">Start date</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="start" class="form-control" id="start" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="end" class="col-sm-2 control-label">End date</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="end" class="form-control" id="end" readonly>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
