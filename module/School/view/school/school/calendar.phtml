@@ -5,6 +5,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/main.min.js"></script>
+
 <h2 align="center"><a href="#">Calendar For[<?php echo $this->group->group_name?>]</a></h2>
 <br />
 
@@ -21,95 +22,90 @@
         center:'title',
         right:'month,agendaWeek,agendaDay,listMonth'
         },
+
             weekNumbers: true,
         events:data,
-        select: function(start, end, allDay)
-            {
-                var title = prompt("Enter Event Title");
-                if(title)
-                {
-                    var start = $.fullCalendar.formatDate(start, "Y-MM-DD HH:mm:ss");
-                    var end = $.fullCalendar.formatDate(end, "Y-MM-DD HH:mm:ss");
-
-                    $.ajax({
-                        url:"<?php echo $this->url('school' ,array('action' => 'addEvent'));?>",
-                        type:"POST",
-                        data:{title:title, start:start, end:end,group_id:<?php echo $this->group->id?>},
-                        success:function()
-                        {
-                            calendar.fullCalendar('refetchEvents');
-                            alert("Added Successfully");
-                        },
-                        failure: function()
-                        {
-                            alert(" could not connect to the calendar action");
-                        }
-                    })
-                }
-            },
+        select:setEvents,
         selectable:true,
         selectHelper:true,
         editable:true,
         });
         });
 
+      function  setEvents(start, end, allDay) {
+          //  let modal_btn= document.getElementById('btn-create-event');
+          //  let title= document.getElementById('title')
+          //
+          //   document.getElementById('end').value=new Date()
+          //   console.log(  $.fullCalendar.formatDate(end, "Y-MM-DD HH:mm:ss"));
+          // console.log(  $.fullCalendar.formatDate(start, "Y-MM-DD HH:mm:ss"));
+          //   modal_btn.click()
+
+           var title = prompt("Enter Event Title");
+            if(title){
+              var start = $.fullCalendar.formatDate(start, "Y-MM-DD HH:mm:ss");
+              var end = $.fullCalendar.formatDate(end, "Y-MM-DD HH:mm:ss");
+
+                $.ajax({
+                    url:"<?php echo $this->url('school' ,array('action' => 'addEvent'));?>",
+                    type:"POST",
+                    data:{title:title, start:start, end:end,group_id:<?php echo $this->group->id?>},
+                    success:function()
+                    {
+                        //calendar.fullCalendar('refetchEvents');
+                        alert("Added Successfully");
+                    },
+                    failure: function()
+                    {
+                        alert(" could not connect to the calendar action");
+                    }
+                })
+            }
+        }
 </script>
 <div class="container">
     <div id="calendar"></div>
 </div>
 
-<div class="modal fade" id="ModalAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<button type="button" class="btn btn-primary" id="btn-create-event" data-toggle="modal" data-target="#exampleModalLong" hidden>
+    create event
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form class="form-horizontal" method="POST" action="addEvent.php">
-
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Add Event</h4>
-                </div>
-                <div class="modal-body">
-
-                    <div class="form-group">
-                        <label for="title" class="col-sm-2 control-label">Title</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="title" class="form-control" id="title" placeholder="Title">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="color" class="col-sm-2 control-label">Color</label>
-                        <div class="col-sm-10">
-                            <select name="color" class="form-control" id="color">
-                                <option value="">Choose</option>
-                                <option style="color:#0071c5;" value="#0071c5">&#9724; Dark blue</option>
-                                <option style="color:#40E0D0;" value="#40E0D0">&#9724; Turquoise</option>
-                                <option style="color:#008000;" value="#008000">&#9724; Green</option>
-                                <option style="color:#FFD700;" value="#FFD700">&#9724; Yellow</option>
-                                <option style="color:#FF8C00;" value="#FF8C00">&#9724; Orange</option>
-                                <option style="color:#FF0000;" value="#FF0000">&#9724; Red</option>
-                                <option style="color:#000;" value="#000">&#9724; Black</option>
-
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="start" class="col-sm-2 control-label">Start date</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="start" class="form-control" id="start" readonly>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="end" class="col-sm-2 control-label">End date</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="end" class="form-control" id="end" readonly>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
-                </div>
-            </form>
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">create event</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label for="start">title:</label>
+                <input type="text" id="title" name="title">
+                <br/>
+                <label for="start">start:</label>
+                <input type="datetime-local" id="start" name="start">
+                <br/>
+                <label for="end">end:</label>
+                <input type="datetime-local" id="end" name="end">
+                <br/>
+                <label for="favcolor">Select your favorite color:</label>
+                <input type="color" id="favcolor" name="favcolor" value="#ff0000"><br><br>
+                <label for="cars">Repeat :</label>
+                <select name="cars" id="cars">
+                    <option value="dialy">dialy</option>
+                    <option value="weekly">weekly</option>
+                    <option value="monthly">monthly</option>
+                    <option value="annualy">annualy</option>
+                </select>
+                <br><br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" data-dismiss="modal" class="btn btn-primary">Save </button>
+            </div>
         </div>
     </div>
 </div>
